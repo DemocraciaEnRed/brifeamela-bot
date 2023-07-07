@@ -6,17 +6,19 @@ async function sendStart(msg){
 *Brifeame: Guatemala 🇬🇹*
 _con Briseida Milián Lemus \\(Twitter: [@BriseidaMilian](https://twitter.com/BriseidaMilian)\\)_
 
-Activista guatemalteca, doctoranda en ciencia política\\. Parte de JusticiaYa 2015\\-2019, socia fundadora del Instituto 25A desde 2018\\.
-
-En nuestra \\#1 edición, te contamos con Briseida sobre la situación actual de Guatemala, la lucha contra la corrupción y la impunidad, y el papel de la sociedad civil en la construcción de un país más justo y democrático\\.
+En nuestra \\#1 edición, Briseida nos va brifear que está pasando, cómo llegamos hasta aquí, cómo profundizar sobre el tema\\.\\.\\.
 `
-  let options = {
-    parse_mode: 'MarkdownV2',
-  };
+let options = {
+  parse_mode: 'MarkdownV2',
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_1' }],
+    ]
+  }
+};
 
   await bot.sendMessage(msg.chat.id, message, options);
 
-  await sendIndex(msg);
   return
 }
 
@@ -51,8 +53,8 @@ _¿A que página te gustaria ir? 📰_
 
 async function sendPage1(msg) {
   let message = `
-\\#1 Edición: *Brifeame: Guatemala 🇬🇹*
-*Página 1/6\\)* _¿Qué está pasando en Guatemala?_
+*Brifeame: Guatemala 🇬🇹*
+*1/6\\)* _¿Qué está pasando?_
 `
 
   await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
@@ -68,9 +70,9 @@ async function sendPage1(msg) {
   await bot.sendAudio(
     msg.chat.id, config.getFilePath('edition01/page01.ogg'),
     { 
-      caption: '🔊 Escuchá lo que nos cuenta Briseida sobre la situación a la fecha en Guatemala. Dale play!',
+      caption: '🔊 Dale play!',
       performer: 'Briseida Milián Lemus',
-      title: '¿Qué está pasando en Guatemala?'
+      title: '¿Qué está pasando?'
     },
     {
       filename: 'Brifeame.LA - #1 - Briseida Milián Lemus - Pag. 1',
@@ -86,8 +88,8 @@ Como seguimos? 🤔
     parse_mode: 'MarkdownV2',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📲 Siguiente página (2 de 6)', callback_data: 'edition01_page_2' }],
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+        [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_2' }],
+        // [{ text: 'Stop', callback_data: 'edition01_index' }],
       ]
     }
   }
@@ -97,8 +99,8 @@ Como seguimos? 🤔
 
 async function sendPage2(msg) {
   let message = `
-\\#1 Edición: *Brifeame: Guatemala 🇬🇹*
-*Página 2/6\\)* _¿Quiénes son los partidos y fuerzas tradicionales en Guatemala que ven como amenaza a una nueva fuerza?_
+*Brifeame: Guatemala 🇬🇹*
+*2/6\\)* _¿Quiénes son los partidos y fuerzas tradicionales que ven como amenaza a una nueva fuerza?_
 `
 
   await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
@@ -114,7 +116,7 @@ async function sendPage2(msg) {
     { 
       caption: '🔊 Dale play!',
       performer: 'Briseida Milián Lemus',
-      title: '¿Quiénes son los partidos y fuerzas tradicionales en Guatemala que ven como amenaza a una nueva fuerza?'
+      title: '¿Quiénes son los partidos y fuerzas tradicionales que ven como amenaza a una nueva fuerza?'
     },
     {
       filename: 'Brifeame.LA - #1 - Briseida Milián Lemus - Pag. 2',
@@ -130,8 +132,7 @@ Como seguimos? 🤔
     parse_mode: 'MarkdownV2',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📲 Siguiente página (3 de 6)', callback_data: 'edition01_page_3' }],
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+        [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_3' }],
       ]
     }
   }
@@ -141,8 +142,8 @@ Como seguimos? 🤔
 
 async function sendPage3(msg) {
   let message = `
-\\#1 Edición: *Brifeame: Guatemala 🇬🇹*
-*Página 3/6\\)* _¿Qué momentos de la historia reciente explican lo que pasa hoy?_
+*Brifeame: Guatemala 🇬🇹*
+*3/6\\)* _¿Qué momentos de la historia reciente explican lo que pasa hoy?_
 `
 
   await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
@@ -174,8 +175,7 @@ Como seguimos? 🤔
     parse_mode: 'MarkdownV2',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📲 Siguiente página (4 de 6)', callback_data: 'edition01_page_4' }],
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+        [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_4' }],
       ]
     }
   }
@@ -185,8 +185,8 @@ Como seguimos? 🤔
 
 async function sendPage4(msg) {
   let message = `
-\\#1 Edición: *Brifeame: Guatemala 🇬🇹*
-*Página 4/6\\)* _¿Qué tiene que ver el estallido de 2015 con lo que pasa hoy?_
+*Brifeame: Guatemala 🇬🇹*
+*4/6\\)* _¿Qué tiene que ver el estallido de 2015 con lo que pasa hoy?_
 `
 
   await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
@@ -218,8 +218,7 @@ Como seguimos? 🤔
     parse_mode: 'MarkdownV2',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📲 Siguiente página (5 de 6)', callback_data: 'edition01_page_5' }],
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+        [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_5' }],
       ]
     }
   }
@@ -229,8 +228,8 @@ Como seguimos? 🤔
 
 async function sendPage5(msg) {
   let message = `
-\\#1 Edición: *Brifeame: Guatemala 🇬🇹*
-*Página 5/6\\)* _¿Cómo llegó Movimiento Semilla a ser la nueva fuerza política en Guatemala?_
+*Brifeame: Guatemala 🇬🇹*
+*5/6\\)* _¿Cómo llegó Movimiento Semilla a ser la nueva fuerza política?_
 `
 
   await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
@@ -246,7 +245,7 @@ async function sendPage5(msg) {
     { 
       caption: '🔊 Dale play!',
       performer: 'Briseida Milián Lemus',
-      title: '¿Cómo llegó Movimiento Semilla a ser la nueva fuerza política en Guatemala?'
+      title: '¿Cómo llegó Movimiento Semilla a ser la nueva fuerza política?'
     },
     {
       filename: 'Brifeame.LA - #1 - Briseida Milián Lemus - Pag. 5',
@@ -262,8 +261,7 @@ Como seguimos? 🤔
     parse_mode: 'MarkdownV2',
     reply_markup: {
       inline_keyboard: [
-        [{ text: '📲 Siguiente página (6 de 6)', callback_data: 'edition01_page_6' }],
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+        [{ text: 'Siguiente ➡️', callback_data: 'edition01_page_6' }],
       ]
     }
   }
@@ -273,8 +271,8 @@ Como seguimos? 🤔
 
 async function sendPage6(msg) {
   let message = `
-#1 Edición: <b>Brifeame: Guatemala 🇬🇹</b>
-Página 6/6) <b>¿Dónde seguir este tema?</b>
+<b>Brifeame: Guatemala 🇬🇹</b>
+<b>6/6)</b> ¿Dónde seguir este tema?
 
 Podes leer mas sobre el tema en los siguientes medios:
 
@@ -307,17 +305,16 @@ Co-fundador de Red Ciudadana Guatemala que trabaja en incentivar la participaci�
 
  
 
-  let endMessage = `_Fín de la página 6 de 6_
-
+  let endMessage = `
 Gracias por leer hasta el final\\! 🙌🏽
 `
   let options = {
     parse_mode: 'MarkdownV2',
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
-      ]
-    }
+    // reply_markup: {
+    //   inline_keyboard: [
+    //     [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
+    //   ]
+    // }
   }
   await bot.sendMessage(msg.chat.id, endMessage, options);
   return
