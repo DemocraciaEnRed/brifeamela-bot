@@ -47,7 +47,7 @@ Gracias por contactarte 🙌✨
 `;
 
   await bot.sendMessage(msg.chat.id, welcomeMessage, { parse_mode: 'MarkdownV2' });
-  await bot.sendVideo(msg.chat.id, 'CgACAgQAAxkBAAMuZKcMJTqQxsLwjkBAMcacRzMIZIgAAwQAAjgVfFI2RcK2yN5YHy8E');
+  // await bot.sendVideo(msg.chat.id, 'CgACAgQAAxkBAAMuZKcMJTqQxsLwjkBAMcacRzMIZIgAAwQAAjgVfFI2RcK2yN5YHy8E');
 	
   let aboutMessage = `
 Tenemos *un MONTOOON* de contenido para ti 🤩
