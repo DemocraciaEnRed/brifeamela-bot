@@ -1,5 +1,6 @@
 import bot from '../telegram.js';
 import config from '../config.js';
+import db from '../db.js';
 
 async function sendStart(msg){
   let message = `
@@ -43,6 +44,7 @@ _¿A que página te gustaria ir? 📰_
           [{ text: '📲 Pag. 1', callback_data: 'edition01_page_1' }, {text: '📲 Pag. 2', callback_data: 'edition01_page_2'}],
           [{ text: '📲 Pag. 3', callback_data: 'edition01_page_3' }, {text: '📲 Pag. 4', callback_data: 'edition01_page_4'}],
           [{ text: '📲 Pag. 5', callback_data: 'edition01_page_5' }, {text: '📲 Pag. 6', callback_data: 'edition01_page_6'}],
+          [{text: 'Dejar feedback', callback_data: 'edition01_feedback'}],
         ]
       }
     };
@@ -306,19 +308,47 @@ Co-fundador de Red Ciudadana Guatemala que trabaja en incentivar la participaci�
  
 
   let endMessage = `
+*➡️ ¿Te gusto nuestrá primera edicion?*
+Podes dejarnos un feedback apretando el botón "*💬 Mandar feedback*"\\! 
+
+De lo contrario, podes hacer clic en "Finalizar"\\.
+
 Gracias por leer hasta el final\\! 🙌🏽
 `
   let options = {
     parse_mode: 'MarkdownV2',
-    // reply_markup: {
-    //   inline_keyboard: [
-    //     [{ text: '📃 Volver al indice', callback_data: 'edition01_index' }],
-    //   ]
-    // }
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '💬 Mandar feedback', callback_data: 'edition01_feedback' }],
+        [{ text: 'Finalizar', callback_data: 'end' }],
+      ]
+    }
   }
   await bot.sendMessage(msg.chat.id, endMessage, options);
+
   return
 }
+
+async function sendFeedback(msg) {
+  let message = `
+*✉️ Feedback de la edición 1*
+
+*Respondé* __a este mensaje__ con tu feedback\\! 🙌
+Guardaré tu respuesta para mejorar en las próximas ediciones\\! 😁
+`
+
+  const feedbackMessage = await bot.sendMessage(msg.chat.id, message, { parse_mode: 'MarkdownV2' });
+
+  db.data.feedbacks[`${feedbackMessage.message_id}_${msg.chat.id}`] = {
+    edition: 1
+  }
+  await db.write()
+  
+  return
+}
+
+
+
 
 export default {
   sendStart,
@@ -328,5 +358,6 @@ export default {
   sendPage3,
   sendPage4,
   sendPage5,
-  sendPage6
+  sendPage6,
+  sendFeedback
 }

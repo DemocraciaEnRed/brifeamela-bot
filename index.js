@@ -7,6 +7,8 @@ import logger from './logger.js'
 import bot from './telegram.js'
 import config from './config.js'
 import editions from './editions/index.js'
+import admin from './admin.js'
+import db from './db.js'
 
 // check if the bot is running
 bot.getMe().then((me) => {
@@ -14,6 +16,7 @@ bot.getMe().then((me) => {
 })
 
 bot.onText(/\/help/, async (msg) => {
+
 	let helpMessage = `
 <b>Brifeame.LA</b> 📰
 
@@ -54,7 +57,7 @@ Tenemos *un MONTOOON* de contenido para ti 🤩
 	
 En nuestra \\#1 edición tenemos *Brifeame: Guatemala 🇬🇹* con Briseida Milián Lemus \\(Twitter: [@BriseidaMilian](https://twitter.com/BriseidaMilian)\\)
 `;
-	await bot.sendMessage(msg.chat.id, aboutMessage, { parse_mode: 'MarkdownV2' });
+ 	await bot.sendMessage(msg.chat.id, aboutMessage, { parse_mode: 'MarkdownV2' });
 	// await bot.sendPhoto(msg.chat.id, 'AgACAgEAAxkBAANwZKcTNTKAdKe31XAO12woCFfzhAMAAl6yMRv4DjlF_8OdxERZW3sBAAMCAANzAAMvBA');
 	await editions.mainIndex(msg);
 
@@ -62,6 +65,28 @@ En nuestra \\#1 edición tenemos *Brifeame: Guatemala 🇬🇹* con Briseida Mil
 
 bot.onText(/\/ultimaedicion/, async (msg) => {
 	await editions.edition01.sendStart(msg);
+});
+
+bot.onText(/\/index/, async (msg) => {
+	await editions.edition01.sendIndex(msg);
+});
+
+bot.onText(/\/admin/, async (msg) => {
+	// check if the user is an admin
+	if (!config.admins.includes(msg.from.id.toString())) {
+		return
+	}
+	let message = `Que te gustaría hacer?`;
+	let options = {
+		parse_mode: 'HTML',
+		reply_markup: {
+			inline_keyboard: [
+				[{ text: 'Leer Feedbacks', callback_data: 'admin_read_feedback' }],
+			]
+		}
+	};
+
+	await bot.sendMessage(msg.chat.id, message, options);
 });
 
 bot.onText(/\/ediciones/, async (msg) => {
@@ -77,7 +102,7 @@ bot.on('callback_query', async (callbackQuery) => {
 	// remove the inline keyboard and edit in the message the selected option
 	bot.editMessageReplyMarkup({ inline_keyboard: [] }, { chat_id: msg.chat.id, message_id: msg.message_id });
 
-	logger.info('User %s selected %s', msg.from.username, data);
+	logger.info('User %s selected %s', msg.chat.username, data);
 
 	// send the selected option
 	switch (data){
@@ -105,6 +130,15 @@ bot.on('callback_query', async (callbackQuery) => {
 			const pageNumber = data.split('_')[2];
 			await editions.edition01[`sendPage${pageNumber}`](msg);
 			return
+		case 'edition01_feedback':
+			await editions.edition01.sendFeedback(msg);
+			return
+		case 'end':
+			await bot.sendMessage(msg.chat.id, 'Gracias por leer Brifeame.LA 📰 👋');
+			return
+		case 'admin_read_feedback':
+			await admin.readFeedbacks(msg);
+			return
 		default:
 			await bot.sendMessage(msg.chat.id, 'No se ha encontrado la opción seleccionada');
 			// bot.answerCallbackQuery(callbackQuery.id)
@@ -120,14 +154,54 @@ bot.on("polling_error", (err) => logger.error(err))
 
 // listen for any kind of message
 bot.on('message', async (msg) => {
-	// if it is a command, return
-	
-	// log the message data
 	logger.info('Message data: %j', msg)
+	
+	// if it is a command, dont do anything
+	if (msg.entities && msg.entities.some(entity => entity.type === 'bot_command')) {
+		return
+	}
+	
+	
+	// if it is a reply to a message, check if it is a feedback
+	if(msg.reply_to_message) {
+		// discard if the message is any kind of media, only text is allowed
+		if(msg.photo || msg.video || msg.audio || msg.document || msg.sticker || msg.animation || msg.voice || msg.video_note){
+			await bot.sendMessage(msg.chat.id, 'Disculpa, solo se permiten mensajes de texto como feedback...\n\nSi puede, vuelva a intentarlo 🙏');
+			return
+		}
+
+		await db.read();
+		if(db.data.feedbacks[`${msg.reply_to_message.message_id}_${msg.from.id}`] != undefined){
+			// record exists, but check if feedback is already there
+			if(db.data.feedbacks[`${msg.reply_to_message.message_id}_${msg.from.id}`].feedback != undefined){
+				await bot.sendMessage(msg.chat.id, 'Ya has enviado tu feedback 🙌');
+				return
+			}
+			// record exists, feedback doesnt, so lets save it.
+
+			let editionNumber = db.data.feedbacks[`${msg.reply_to_message.message_id}_${msg.from.id}`].edition
+
+			let feedback = {
+				'edition': editionNumber,
+				'user': msg.from,
+				'feedback': msg.text
+			}
+
+			db.data.feedbacks[`${msg.reply_to_message.message_id}_${msg.from.id}`] = feedback;
+
+			await db.write();
+
+			await bot.sendMessage(msg.chat.id, '¡Gracias por tu feedback! 😀');
+
+			return
+		}
+	}
+
 	// check if the user is an admin
 	if (!config.admins.includes(msg.from.id.toString())) {
 		return
 	}
+	// log the message data
 	
 	logger.info('User %s is an admin', msg.from.username)
 
@@ -144,5 +218,6 @@ bot.on('message', async (msg) => {
     logger.info('Message data: %j', msg)
 		await bot.sendMessage(msg.chat.id, 'Thank you! Check the logs for more info.');
 	}
+
 
 });

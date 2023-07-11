@@ -1,7 +1,8 @@
 import 'dotenv/config'
-
 // import TelegramBot
 import TelegramBot from 'node-telegram-bot-api';
+
+const serverStartUpTime = Date.now();
 
 // replace the value below with the Telegram token you receive from @BotFather
 const token = process.env.TELEGRAM_BOT_TOKEN;

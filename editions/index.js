@@ -10,6 +10,7 @@ async function mainIndex(msg) {
       inline_keyboard: [
         [{ text: '#1 Brifeame: Guatemala 🇬🇹', callback_data: 'last_edition' }],
         [{ text: '↩️ Ediciones anteriores', callback_data: 'previous_editions' }],
+        [{ text: 'Finalizar', callback_data: 'end' }],
       ]
     }
   };
@@ -24,6 +25,7 @@ async function previousEditionsIndex(msg) {
     reply_markup: {
       inline_keyboard: [
         [{ text: '↩️ Volver al menú', callback_data: 'main_index' }],
+        [{ text: 'Finalizar', callback_data: 'end' }],
       ]
     }
   }
